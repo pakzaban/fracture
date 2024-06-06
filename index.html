@@ -15,9 +15,12 @@
             border-radius: 8px;
             margin: 30px auto 0 auto;
             padding: 20px 10px;
-            /*max-width: 800px;*/
             border-color: black;
             box-shadow: 0 4px 10px 0 black;
+        }
+
+        .left-adjust{
+            text-align: left;
         }
 
         .tight-margins{
@@ -48,11 +51,13 @@
             padding: 0;
             border-radius: 8px;
             margin: 30px auto 0 auto;
-            /*max-width: 100%;*/
             box-shadow: 0 4px 10px 0 black;
         }
 
-        .logo{
+        .modal_image{
+            max-width: 300px;
+            border-radius: 5px;
+            border-color: #6c757d;
 
         }
 
@@ -95,6 +100,7 @@
                     <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Yes</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">No</button>
                 </div>
+                <button type="button" class="btn btn-outline-info btn-sm tight-margins" id="path" data-bs-toggle="modal" data-bs-target="#exampleModal">Info</button>
             </div>
             <div>
                 <h6>Can the patient ambulate in spite of pain?</h6>
@@ -120,9 +126,36 @@
     <p class="disclaimer"> Disclaimer: This site is designed as a guideline for practitioners at hospitals where
         Dr. Pakzaban is available for consultation. An algorithm does not replace clinical judgement. If there is any
         ambiguity in a particular case, do not hesitate to consult neurosurgery.</p>
+
+    <!--Pathological Fx Info Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pathological Compression Fracture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body left-adjust">
+                    <img class="modal_image" src="path_fx.jpeg"><br>
+                    Pathological compression fractures require different treatment compared to the more
+                    common osteoporotic compression fractures. Consider the following:<br><br>
+                    1. Does the patient have signs of systemic infection/sepsis?<br>
+                    2. Is there a history of malignancy?<br>
+                    3. Does the radiologist raise concern for infection or tumor on the CT report?<br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+
     function toggleActive(button) {
         const parent = button.parentElement;
         const buttons = parent.getElementsByTagName('button');
@@ -167,7 +200,7 @@
         });
 
         if (!valid) {
-            alert('Please select an option in each group.');
+            alert('Please answer ALL questions.');
         }
 
         return valid; // Prevent form submission if not valid
@@ -202,7 +235,7 @@
             "any neurological symptoms or worsening of gait."}
 
         // Display the result
-        document.getElementById('result').textContent = computedResult;
+        $('#result').text(computedResult);
 
         return false; // Prevent form submission to allow result display
     }
@@ -235,9 +268,14 @@
             group.classList.remove('border', 'border-danger');
         });
 
-        document.getElementById('result').textContent = '';
-        document.getElementById('submit-button').textContent = 'Submit';
+        // Reset the text of result div and submit button
+        $('#result').text('');
+        $('#submit-button').text('Submit');
         enableButtons()
+    }
+
+    function showPathInfo(){
+
     }
 </script>
 
