@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Site</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body{
+            background-color: #282c34;
+        }
+
+        .canvas{
+            background-color: #fff;
+            color: #282c34;
+            border-radius: 8px;
+            margin: 30px auto 0 auto;
+            padding: 20px 10px;
+            max-width: 800px;
+            border-color: black;
+            box-shadow: 0 4px 10px 0 black;
+        }
+
+        .tight-margins{
+            margin: 0 auto 8px auto;
+        }
+
+        .title{
+            margin-top: 30px;
+            color: #f3dec4;
+        }
+
+        .result {
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        .btn-group button.disabled-active {
+            background-color: #6c757d !important;
+            color: white !important;
+            pointer-events: none;
+        }
+        #submit-button{
+            width: 100%;
+        }
+
+        .image{
+            width: 80%;
+            padding: 0;
+            border-radius: 8px;
+            margin: 30px auto 0 auto;
+            max-width: 800px;
+            box-shadow: 0 4px 10px 0 black;
+        }
+
+        .logo{
+
+        }
+
+        .disclaimer{
+            background-color: #282c34;
+            font-size: 14px;
+            color: white;
+            margin: auto;
+            padding: 20px 10px;
+            max-width: 800px;
+
+        }
+    </style>
+</head>
+<body>
+
+<div class="container text-center">
+    <h2 class="title">Spine Fracture Algorithm</h2>
+    <div class="canvas">
+
+        <form onsubmit="return handleFormSubmit()">
+            <div>
+                <h6>Is the patient neurologically intact?</h6>
+                <div class="btn-group btn-group-sm tight-margins" role="group" aria-label="First group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Yes</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">No</button>
+                </div>
+            </div>
+            <div>
+                <h6>What is the fracture type?</h6>
+                <div class="btn-group btn-group-sm tight-margins" role="group" aria-label="Second group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Compression/Endplate Fx</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Transverse Process Fx</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Other</button>
+                </div>
+            </div>
+            <div>
+                <h6>Is there a concern for pathological fracture due to infection or neoplasm?</h6>
+                <div class="btn-group btn-group-sm tight-margins " role="group" aria-label="Third group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Yes</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">No</button>
+                </div>
+            </div>
+            <div>
+                <h6>Can the patient ambulate in spite of pain?</h6>
+                <div class="btn-group btn-group-sm tight-margins" role="group" aria-label="Fourth group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Yes</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">No</button>
+                </div>
+            </div>
+            <div>
+                <h6>Degree of retropulsion/spinal stenosis on CT:</h6>
+                <div class="btn-group btn-group-sm tight-margins" role="group" aria-label="Fifth group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">None</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Mild</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Moderate</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Severe</button>
+                </div>
+            </div>
+            <div class="result" id="result"></div>
+            <button type="submit" class="btn btn-primary" id="submit-button">Submit</button>
+        </form>
+    </div>
+    <img src="algo.png" class="image logo">
+    <p class="disclaimer"> Disclaimer: This site is designed as a guideline for practitioners at hospitals where
+        Dr. Pakzaban is available for consultation. An algorithm does not replace clinical judgement. If there is any
+        ambiguity in a particular case, do not hesitate to consult neurosurgery.</p>
+</div>
+
+<script>
+    function toggleActive(button) {
+        const parent = button.parentElement;
+        const buttons = parent.getElementsByTagName('button');
+
+        for (let btn of buttons) {
+            btn.classList.remove('active');
+        }
+
+        button.classList.add('active');
+    }
+
+    function handleFormSubmit() {
+        const submitButton = document.getElementById('submit-button');
+
+        if (submitButton.textContent === 'Clear') {
+            resetForm();
+            return false;
+        }
+
+        if (!validateForm()) {
+            return false; // Prevent form submission if validation fails
+        }
+
+        computeResult();
+        disableButtons();
+        submitButton.textContent = 'Clear';
+        return false; // Prevent form submission to allow result display
+    }
+
+    function validateForm() {
+        const groups = document.querySelectorAll('.btn-group');
+        let valid = true;
+
+        groups.forEach(group => {
+            const activeButton = group.querySelector('button.active');
+            if (!activeButton) {
+                valid = false;
+                group.classList.add('border', 'border-danger'); // Highlight the group if invalid
+            } else {
+                group.classList.remove('border', 'border-danger');
+            }
+        });
+
+        if (!valid) {
+            alert('Please select an option in each group.');
+        }
+
+        return valid; // Prevent form submission if not valid
+    }
+
+    function computeResult() {
+        const groups = document.querySelectorAll('.btn-group');
+        let result = [];
+
+        groups.forEach(group => {
+            const activeButton = group.querySelector('button.active');
+            if (activeButton) {
+                result.push(activeButton.textContent);
+            }
+        });
+
+        let computedResult = "";
+        if (result[0] === 'No' || result[1] === 'Other' || result[2] === 'Yes' || result[4] === "Severe") {
+            computedResult = "Consult neurosurgery for further instructions.";
+        }
+        else if (result[1] === 'Compression/Endplate Fx' && result[3] === 'No') {
+            computedResult = "Admit patient and consult IR for consideration of kyphoplasty. If the need arises, IR" +
+                "may consult neurosurgery."
+        }
+        else if (result[1] === 'Transverse Process Fx' && result[3] === 'No') {
+            computedResult = "Admit patient as needed for management of pain and associated injuries. Isolated transverse" +
+                " process fractures do not require neurosurgical intervention regardless of their number."
+        }
+        else {computedResult = "Such patients can be treated conservatively. Consider discharge with a mild analgesic" +
+            " and follow up with PCP. Although not required, some patients benefit from a soft lumbar brace and can get" +
+            " one from a drug or medical supply store after discharge. Tell the patient to return if they develop " +
+            "any neurological symptoms or worsening of gait."}
+
+        // Display the result
+        document.getElementById('result').textContent = computedResult;
+
+        return false; // Prevent form submission to allow result display
+    }
+
+    function disableButtons() {
+        const buttons = document.querySelectorAll('.btn-group button');
+        buttons.forEach(button => {
+            if (button.classList.contains('active')) {
+                button.classList.add('disabled-active');
+            }
+            button.disabled = true;
+        });
+    }
+
+    function enableButtons() {
+        const buttons = document.querySelectorAll('.btn-group button');
+        buttons.forEach(button => {
+            button.classList.remove('disabled-active');
+            button.disabled = false;
+        });
+    }
+
+    function resetForm() {
+        const groups = document.querySelectorAll('.btn-group');
+        groups.forEach(group => {
+            const buttons = group.getElementsByTagName('button');
+            for (let btn of buttons) {
+                btn.classList.remove('active');
+            }
+            group.classList.remove('border', 'border-danger');
+        });
+
+        document.getElementById('result').textContent = '';
+        document.getElementById('submit-button').textContent = 'Submit';
+        enableButtons()
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
