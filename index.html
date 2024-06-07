@@ -100,7 +100,9 @@
                     <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Yes</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">No</button>
                 </div>
-                <button type="button" class="btn btn-outline-info btn-sm tight-margins" id="path" data-bs-toggle="modal" data-bs-target="#exampleModal">Info</button>
+                <!--Info button 1-->
+                <button type="button" class="btn btn-outline-info btn-sm tight-margins"
+                        id="patho_fx" data-bs-toggle="modal" data-bs-target="#Modal">Info</button>
             </div>
             <div>
                 <h6>Can the patient ambulate in spite of pain?</h6>
@@ -117,6 +119,9 @@
                     <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Moderate</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="toggleActive(this)">Severe</button>
                 </div>
+                <!--Info button 2-->
+                <button type="button" class="btn btn-outline-info btn-sm tight-margins"
+                        id="retro" data-bs-toggle="modal" data-bs-target="#Modal">Info</button>
             </div>
             <div class="result" id="result"></div>
             <button type="submit" class="btn btn-primary" id="submit-button">Submit</button>
@@ -127,21 +132,18 @@
         Dr. Pakzaban is available for consultation. An algorithm does not replace clinical judgement. If there is any
         ambiguity in a particular case, do not hesitate to consult neurosurgery.</p>
 
+
     <!--Pathological Fx Info Modal-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Pathological Compression Fracture</h5>
+                    <h5 class="modal-title" id="popup_title"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body left-adjust">
-                    <img class="modal_image" src="path_fx.jpeg"><br>
-                    Pathological compression fractures require different treatment compared to the more
-                    common osteoporotic compression fractures. Consider the following:<br><br>
-                    1. Does the patient have signs of systemic infection/sepsis?<br>
-                    2. Is there a history of malignancy?<br>
-                    3. Does the radiologist raise concern for infection or tumor on the CT report?<br>
+                <div class="modal-body">
+                    <img id="modal_image" class="modal_image" src="">
+                    <div id="modal_text" class="left-adjust"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -227,7 +229,7 @@
         }
         else if (result[1] === 'Transverse Process' && result[3] === 'No') {
             computedResult = "Admit patient as needed for management of pain and associated injuries. Isolated transverse" +
-                " process fractures do not require neurosurgical intervention regardless of their number."
+                " process fractures do not require neurosurgical intervention regardless of the number of affected vertebrae."
         }
         else {computedResult = "Such patients can be treated conservatively. Consider discharge with a mild analgesic" +
             " and follow up with PCP. Although not required, some patients benefit from a soft lumbar brace and can get" +
@@ -274,9 +276,40 @@
         enableButtons()
     }
 
-    function showPathInfo(){
+
+    $("#patho_fx").on("click",function (event){
+        setMessage(event)
+    })
+    $("retro").on("click", function(event){
+        setMessage(event);
+    });
+
+    function setMessage(event){
+        let message1 = `Management of pathological compression fractures differs from that of the more
+                    common osteoporotic compression fractures. Consider the following:<br>
+                    <ol>
+                    <li>Does the patient have signs of systemic infection/sepsis?</li>
+                    <li>Is there a history of malignancy?</li>
+                    <li>Does the radiologist raise concern for infection or tumor on the CT report?</li>
+                    </ol>`
+        let message2 = `<br>Note that we are NOT interested in percent vertebral height loss (green) here.
+        We are interested in the severity of spinal stenosis caused by retropulsion (red).`
+        let id = event.target.id;
+
+        if (id==="patho_fx"){
+            $("#popup_title").text("Pathological Compression Fracture");
+            $("#modal_image").attr("src", "path_fx.jpeg");
+            $("#modal_text").html(message1);
+        }
+        else if (id==="retro"){
+            $("#popup_title").text("Retropulsion Severity");
+            $("#modal_image").attr("src", "retro.png");
+            $("#modal_text").html(message2);
+        }
 
     }
+
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
