@@ -62,7 +62,12 @@
         </form>
     </div>
     <img src="algo.png" class="image logo">
-    <p class="disclaimer"> Disclaimer: This site is designed as a guideline for practitioners at hospitals where
+    <p class="promo">
+        Add this web app to your mobile device for easier access.
+        <button type="button" class="btn btn-outline-info btn-sm tight-margins" style="margin-left:10px"
+                id="promo-button" data-bs-toggle="modal" data-bs-target="#Modal">Info</button>
+    </p>
+    <p class="disclaimer">Disclaimer: This site is designed as a guideline for practitioners at hospitals where
         Dr. Pakzaban is available for consultation. An algorithm does not replace clinical judgement. If there is any
         ambiguity in a particular case, do not hesitate to consult neurosurgery.</p>
 
@@ -210,11 +215,16 @@
         enableButtons()
     }
 
-
+    // EventListeners for modals
     $("#patho_fx").on("click",function (event){
         setMessage(event)
     })
+
     $("#retro").on("click", function(event){
+        setMessage(event);
+    });
+
+    $("#promo-button").on("click", function(event){
         setMessage(event);
     });
 
@@ -226,8 +236,14 @@
                     <li>Is there a history of malignancy?</li>
                     <li>Does the radiologist raise concern for infection or tumor on the CT report?</li>
                     </ol>`
+
         let message2 = `<br>Note that we are NOT interested in percent vertebral height loss (green) here.
         We are interested in the severity of spinal stenosis caused by retropulsion (red).`
+
+        let message3= `<b>iPhone:</b> With this page open in Safari or Chrome, tap the share button <img src="https://help.apple.com/assets/65E21662495F1A6C8701F50A/65E21663EF8273BE1D0C2734/en_US/d26fe35d3438fe81179a80c2b6c9b0c9.png" alt="the Share button" height="20"> , scroll down, and select Add to home
+        screen. <br><br> <b>Android:</b> With this page open in Chrome, tap the menu icon (3 vertical dots in upper right-hand corner) and tap Add to home screen. Alternatively,
+        in Samsung Internet Browser, tap the stack of 3 horizontal lines in the right lower corner and then tap Add to home screen.`
+
         let id = event.target.id;
 
         if (id==="patho_fx"){
@@ -240,10 +256,12 @@
             $("#modal_image").attr("src", "retro.png");
             $("#modal_text").html(message2);
         }
+        else if (id==="promo-button"){
+            $("#popup_title").text("Adding App to Home Screen");
+            $("#modal_text").html(message3);
 
+        }
     }
-
-
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
